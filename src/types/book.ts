@@ -18,6 +18,8 @@ export interface BookDetail extends Book {
   publishers?: string[];
   publish_date?: string[];
   subtitle?: string;
+  first_publish_year?: number;
+  author_name?: string[];
 }
 
 export interface SearchResponse {

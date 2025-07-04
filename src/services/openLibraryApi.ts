@@ -28,6 +28,28 @@ export class OpenLibraryAPI {
     }
     
     const data = await response.json();
+    
+    // If authors are in detailed format, fetch author names
+    if (data.authors && Array.isArray(data.authors)) {
+      const authorPromises = data.authors.map(async (authorRef: any) => {
+        if (authorRef.author && authorRef.author.key) {
+          try {
+            const authorResponse = await fetch(`${BASE_URL}${authorRef.author.key}.json`);
+            if (authorResponse.ok) {
+              const authorData = await authorResponse.json();
+              return authorData.name || 'Unknown Author';
+            }
+          } catch (error) {
+            console.warn('Failed to fetch author details:', error);
+          }
+        }
+        return 'Unknown Author';
+      });
+      
+      const authorNames = await Promise.all(authorPromises);
+      data.author_name = authorNames;
+    }
+    
     return data;
   }
 

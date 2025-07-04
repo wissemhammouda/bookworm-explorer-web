@@ -94,8 +94,10 @@ export default function BookDetail() {
   }
 
   const coverUrl = OpenLibraryAPI.getCoverUrl(book.cover_i, 'L');
-  const authors = OpenLibraryAPI.formatAuthors(book.author_name);
+  const authors = OpenLibraryAPI.formatAuthors(bookDetail?.author_name || book.author_name);
   const description = OpenLibraryAPI.extractDescription(bookDetail?.description);
+  const publishYear = bookDetail?.first_publish_year || book.first_publish_year;
+  const allISBNs = [...(book.isbn || []), ...(bookDetail?.isbn_10 || []), ...(bookDetail?.isbn_13 || [])];
 
   return (
     <div className="min-h-screen bg-background">
@@ -146,7 +148,7 @@ export default function BookDetail() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Author */}
-                {book.author_name && (
+                {(bookDetail?.author_name || book.author_name) && (
                   <div className="flex items-center gap-3">
                     <User className="w-5 h-5 text-primary" />
                     <span className="text-lg font-medium">{authors}</span>
@@ -154,10 +156,10 @@ export default function BookDetail() {
                 )}
 
                 {/* Publication Year */}
-                {book.first_publish_year && (
+                {publishYear && (
                   <div className="flex items-center gap-3">
                     <Calendar className="w-5 h-5 text-primary" />
-                    <span className="text-lg">{book.first_publish_year}</span>
+                    <span className="text-lg">{publishYear}</span>
                   </div>
                 )}
 
@@ -202,14 +204,14 @@ export default function BookDetail() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* ISBN */}
-                {(book.isbn || bookDetail?.isbn_10 || bookDetail?.isbn_13) && (
+                {allISBNs.length > 0 && (
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <Hash className="w-5 h-5 text-primary" />
                       <span className="font-medium">ISBN</span>
                     </div>
                     <div className="ml-8 space-x-2">
-                      {(book.isbn || bookDetail?.isbn_10 || bookDetail?.isbn_13 || []).slice(0, 3).map((isbn) => (
+                      {allISBNs.slice(0, 5).map((isbn) => (
                         <Badge key={isbn} variant="outline" className="font-mono">
                           {isbn}
                         </Badge>
