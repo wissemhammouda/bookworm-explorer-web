@@ -93,7 +93,9 @@ export default function BookDetail() {
     );
   }
 
-  const coverUrl = OpenLibraryAPI.getCoverUrl(book.cover_i, 'L');
+  // Get cover ID from bookDetail.covers array or fallback to book.cover_i
+  const coverId = bookDetail?.covers?.[0] || book.cover_i;
+  const coverUrl = OpenLibraryAPI.getCoverUrl(coverId, 'L');
   const authors = OpenLibraryAPI.formatAuthors(bookDetail?.author_name || book.author_name);
   const description = OpenLibraryAPI.extractDescription(bookDetail?.description);
   const publishYear = bookDetail?.first_publish_year || book.first_publish_year;

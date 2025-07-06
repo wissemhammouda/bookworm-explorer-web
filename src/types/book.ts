@@ -20,6 +20,7 @@ export interface BookDetail extends Book {
   subtitle?: string;
   first_publish_year?: number;
   author_name?: string[];
+  covers?: number[];
 }
 
 export interface SearchResponse {
